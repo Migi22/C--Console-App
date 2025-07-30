@@ -10,16 +10,22 @@ string animalNickname = "";
 int maxPets = 8;
 string? readResult;
 string menuSelection = "";
+bool validEntry = false;
+int petAge = 0;
 
 // array used to store runtime data, there is no persisted data
 string[,] ourAnimals = new string[maxPets, 6];
+
+// count of the pets
+int petCount = 0;
 
 // TODO: Convert the if-elseif-else construct to a switch statement
 
 // create some initial ourAnimals array entries
 for (int i = 0; i < maxPets; i++)
 {
-    switch (i) {
+    switch (i)
+    {
         case 0:
             animalSpecies = "dog";
             animalID = "d1";
@@ -62,12 +68,12 @@ for (int i = 0; i < maxPets; i++)
             break;
     }
 
-            ourAnimals[i, 0] = "ID #: " + animalID;
-            ourAnimals[i, 1] = "Species: " + animalSpecies;
-            ourAnimals[i, 2] = "Age: " + animalAge;
-            ourAnimals[i, 3] = "Nickname: " + animalNickname;
-            ourAnimals[i, 4] = "Physical description: " + animalPhysicalDescription;
-            ourAnimals[i, 5] = "Personality: " + animalPersonalityDescription;
+    ourAnimals[i, 0] = "ID #: " + animalID;
+    ourAnimals[i, 1] = "Species: " + animalSpecies;
+    ourAnimals[i, 2] = "Age: " + animalAge;
+    ourAnimals[i, 3] = "Nickname: " + animalNickname;
+    ourAnimals[i, 4] = "Physical description: " + animalPhysicalDescription;
+    ourAnimals[i, 5] = "Personality: " + animalPersonalityDescription;
 }
 
 
@@ -106,7 +112,7 @@ do
                     Console.WriteLine();
                     for (int j = 0; j < 6; j++)
                     {
-                        Console.WriteLine(ourAnimals[i, j]);    
+                        Console.WriteLine(ourAnimals[i, j]);
                     }
                 }
             }
@@ -117,7 +123,6 @@ do
         case "2":
             // Add a new animal friend to the ourAnimals array
             string anotherPet = "y";
-            int petCount = 0;
             for (int i = 0; i < maxPets; i++)
             {
                 if (ourAnimals[i, 0] != "ID #: ")
@@ -135,7 +140,6 @@ do
             // Proceeds on adding pets if the condition are meet (enter "y" and petCount is less than the maxPets)
             while (anotherPet == "y" && petCount < maxPets)
             {
-                bool validEntry = false;
 
                 // SPECIES OF PET (cat or dog) - string animalSpecies is a required field
                 do
@@ -169,7 +173,6 @@ do
                 // PET'S AGE. It can be ? at initial entry.
                 do
                 {
-                    int petAge;
 
                     Console.WriteLine("Enter the pet's age or enter ? if unkown");
                     readResult = Console.ReadLine();
@@ -178,7 +181,7 @@ do
                     if (readResult != null)
                     {
                         animalAge = readResult;
-                        
+
                         // Checks if the enter value are ? or integer before trying to parse it
                         if (animalAge != "?")
                         {
@@ -254,7 +257,7 @@ do
                 ourAnimals[petCount, 3] = "Nickname: " + animalNickname;
                 ourAnimals[petCount, 4] = "Physical description: " + animalPhysicalDescription;
                 ourAnimals[petCount, 5] = "Personality: " + animalPersonalityDescription;
-                
+
                 // increment petCount ( the aray is zero-base, so we increment the counter after adding to the array)
                 petCount++;
 
@@ -283,14 +286,32 @@ do
                 Console.WriteLine("Press the Enter key to continue.");
                 readResult = Console.ReadLine();
             }
-            
+
             break;
 
         case "3":
-            // Ensure animal ages and physical descriptions are complete
-            Console.WriteLine("Challenge Projects - please check back to see progress.");
-            Console.WriteLine("Press the Enter key to continue.");
-            readResult = Console.ReadLine();
+            // Ensure animal age and physical description are complete
+
+            // Iterates to the array and changes the PET's AGE 
+            for (int i = 0; i < maxPets; i++)
+            {
+                // Checks if the age has "?" (in which indicates no age assigned) and checks if the pet ID is not empty
+                if (ourAnimals[i, 2] == "Age: ?" && ourAnimals[i, 0] != "ID #: ")
+                {
+                    do
+                    {
+                        // Prompt the user to enter an age to the selected pet ID
+                        Console.WriteLine($"Enter an age for {ourAnimals[i, 0]}");
+                        readResult = Console.ReadLine();
+                        if (readResult != null)
+                        {
+                            animalAge = readResult;
+                            validEntry = int.TryParse(animalAge, out petAge);
+                        }
+                    } while (validEntry == false);
+                    ourAnimals[i, 2] = "Age: " + animalAge.ToString();
+                }
+            }
             break;
 
         case "4":
